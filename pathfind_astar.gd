@@ -1,25 +1,36 @@
+# PATHFINDING Script
+#
+# Description: heavily modified code based on GDQuest's A* pathfinding script.
+# This script and the tilemap are responsible for the movement in tiles, positioning in tiles
+# pathfinding, drawing in the map and calculating everything related to movement.
+#
+# Variable clarification: if it is in FULL_CAPS it is a constant. _variables or _methods are private
+# (altought they can still be acessed)
+
 extends TileMap
 
-# You can only create an AStar node from code, not from the Scene tab
+# Creates pathfinding node.
 onready var astar_node = AStar.new()
-# The Tilemap node doesn't have clear bounds so we're defining the map's limits here
-export(Vector2) var map_size = Vector2(16, 16)
+# The tilemap doesn't have defined boundaries, so we create them here
+const MAP_WIDTH = 16
+const MAP_HEIGHT = 16
+export(Vector2) var map_size = Vector2(MAP_WIDTH, MAP_HEIGHT)
 
-# The path start and end variables use setter methods
-# You can find them at the bottom of the script
+# path_start and end variables are set by these functions. The array of points is empty
 var path_start_position = Vector2() setget _set_path_start_position
 var path_end_position = Vector2() setget _set_path_end_position
-
 var _point_path = []
 
+# Definind some constants for drawing.
 const BASE_LINE_WIDTH = 3.0
 const DRAW_COLOR = Color('#fff')
+onready var _HALF_CELL_SIZE = cell_size / 2
 
-# get_used_cells_by_id is a method from the TileMap node
-# here the id 0 corresponds to the grey tile, the obstacles
+# Creates the obstacles by getting the cells with id 0 (obstacle)
 onready var obstacles = get_used_cells_by_id(0)
-onready var _half_cell_size = cell_size / 2
 
+# Function runs when node and children enter active state in scene. 
+# That is, it runs once when everything is ready.
 func _ready():
 	var walkable_cells_list = astar_add_walkable_cells(obstacles)
 	astar_connect_walkable_cells(walkable_cells_list)
@@ -34,17 +45,12 @@ func astar_add_walkable_cells(found_obstacles = []):
 			var point = Vector2(x, y)
 			if point in found_obstacles:
 				continue
-
 			points_array.append(point)
-			# The AStar class references points with indices
-			# Using a function to calculate the index from a point's coordinates
-			# ensures we always get the same index with the same input point
+			# Reminder: A* in godot uses int indices for points.
 			var point_index = calculate_point_index(point)
-			# AStar works for both 2d and 3d, so we have to convert the point
-			# coordinates from and to Vector3s
+			# A* returns vectors in 3d. So remember to get only x and y.
 			astar_node.add_point(point_index, Vector3(point.x, point.y, 0.0))
 	return points_array
-
 
 # Once you added all points to the AStar node, you've got to connect them
 # The points don't have to be on a grid: you can use this class
@@ -54,9 +60,7 @@ func astar_add_walkable_cells(found_obstacles = []):
 func astar_connect_walkable_cells(points_array):
 	for point in points_array:
 		var point_index = calculate_point_index(point)
-		# For every cell in the map, we check the one to the top, right.
-		# left and bottom of it. If it's in the map and not an obstalce,
-		# We connect the current point with it
+		# For every cell in the map, we check the ones besides them.
 		var points_relative = PoolVector2Array([
 			Vector2(point.x + 1, point.y),
 			Vector2(point.x - 1, point.y),
@@ -64,9 +68,10 @@ func astar_connect_walkable_cells(points_array):
 			Vector2(point.x, point.y - 1)])
 		for point_relative in points_relative:
 			var point_relative_index = calculate_point_index(point_relative)
-
+			# If outside map or if already added.
 			if is_outside_map_bounds(point_relative):
 				continue
+			# If
 			if not astar_node.has_point(point_relative_index):
 				continue
 			# Note the 3rd argument. It tells the astar_node that we want the
@@ -106,7 +111,7 @@ func find_path(world_start, world_end):
 	_recalculate_path()
 	var path_world = []
 	for point in _point_path:
-		var point_world = map_to_world(Vector2(point.x, point.y)) + _half_cell_size
+		var point_world = map_to_world(Vector2(point.x, point.y)) + _HALF_CELL_SIZE
 		path_world.append(point_world)
 	return path_world
 
@@ -130,7 +135,7 @@ func clear_previous_path_drawing():
 	set_cell(point_start.x, point_start.y, -1)
 	set_cell(point_end.x, point_end.y, -1)
 
-func clear_movement_area(position):
+func clear_movement_area():
 	for point in points_draw_area:
 		var tile_position = astar_node.get_point_position(point);
 		set_cell(tile_position.x, tile_position.y, -1)
@@ -164,9 +169,9 @@ func _draw():
 	set_cell(point_start.x, point_start.y, 1)
 	set_cell(point_end.x, point_end.y, 2)
 
-	var last_point = map_to_world(Vector2(point_start.x, point_start.y)) + _half_cell_size
+	var last_point = map_to_world(Vector2(point_start.x, point_start.y)) + _HALF_CELL_SIZE
 	for index in range(1, len(_point_path)):
-		var current_point = map_to_world(Vector2(_point_path[index].x, _point_path[index].y)) + _half_cell_size
+		var current_point = map_to_world(Vector2(_point_path[index].x, _point_path[index].y)) + _HALF_CELL_SIZE
 		draw_line(last_point, current_point, DRAW_COLOR, BASE_LINE_WIDTH, true)
 		draw_circle(current_point, BASE_LINE_WIDTH * 2.0, DRAW_COLOR)
 		last_point = current_point

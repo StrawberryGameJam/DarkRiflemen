@@ -1,12 +1,15 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://tileset/grid_lines/grid_lines_tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://tileset/grid/tileset.tres" type="TileSet" id=2]
 [ext_resource path="res://pathfind_astar.gd" type="Script" id=3]
 [ext_resource path="res://character.gd" type="Script" id=4]
 [ext_resource path="res://sprites/character.png" type="Texture" id=5]
+[ext_resource path="res://Game.gd" type="Script" id=6]
+[ext_resource path="res://Enemy.gd" type="Script" id=7]
 
 [node name="Game" type="Node"]
+script = ExtResource( 6 )
 
 [node name="GridLines" type="TileMap" parent="."]
 modulate = Color( 1, 1, 1, 0.331333 )
@@ -27,5 +30,13 @@ position = Vector2( 156.209, 97.3416 )
 script = ExtResource( 4 )
 
 [node name="Sprite" type="Sprite" parent="Character"]
+position = Vector2( 7, 0 )
+texture = ExtResource( 5 )
+
+[node name="Enemy" type="Position2D" parent="."]
+position = Vector2( 924.523, 480.555 )
+script = ExtResource( 7 )
+
+[node name="Sprite" type="Sprite" parent="Enemy"]
 position = Vector2( 7, 0 )
 texture = ExtResource( 5 )

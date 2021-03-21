@@ -24,13 +24,11 @@ func _tile(point):
 
 func _change_state(new_state):
 	if new_state == STATES.FOLLOW:
-		path = get_parent().get_node('TileMap').find_path(position, target_position)
+		path = get_parent().get_node('TileMap').find_path(position, target_position).slice(0, 5)
 		if not path or len(path) == 1:
 			get_parent().get_node('TileMap').clear_previous_path_drawing()
 			_change_state(STATES.IDLE)
 			return
-		# The index 0 is the starting cell
-		# we don't want the character to move back to it in this example
 		target_point_world = path[1]
 	_state = new_state
 
@@ -60,24 +58,8 @@ func _move_to(world_position):
 	rotation = velocity.angle()
 	return position.distance_to(world_position) < ARRIVE_DISTANCE
 
-
-func _input(event):
+func zombie_actions():
 	if _state == STATES.IDLE:
-		if selected and event.is_action_pressed('click'):
-			target_position = get_global_mouse_position();
-			var target_tile = _tile(target_position);
-			var target_tile_value = get_parent().get_node('TileMap').get_cell(target_tile.x, target_tile.y);
-			print(target_tile,":", target_tile_value)
-			if target_tile_value in [1,2]:
-				if target_tile_value == 1:
-					actions_taken += 1
-				else:
-					actions_taken += 2
-				_change_state(STATES.FOLLOW)
-			get_parent().get_node('TileMap').clear_movement_area()
-			selected = false
-		elif event.is_action_pressed('click'):
-			if(_tile(get_global_mouse_position()) == tile_position):
-				selected = true;
-				get_parent().get_node('TileMap').draw_movement_area(position)
-
+		target_position = get_parent().get_node('Character').position;
+		_change_state(STATES.FOLLOW)
+		
