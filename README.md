@@ -1,0 +1,1 @@
+A turn-based indie survival strategy RPG set in a Lovecraftian 1920's Russia made with GODOT. Inspired by XCOM and using [GDQuest's A* navigation amazing demo](https://www.youtube.com/watch?v=Ad6Us73smNs) as a base.
