@@ -1,10 +1,12 @@
 extends Node
 
-var player = 0
+enum {PLAYER_TURN, ENEMY_TURN}
+
+var current_turn = PLAYER_TURN
 func _input(event):
-	if player == 0 and event is InputEventKey:
+	if current_turn == PLAYER_TURN and event is InputEventKey:
 		if (event as InputEventKey).scancode == KEY_ESCAPE and not event.echo:
 			print("Player clicked escape")
-			player = 1;
+			current_turn = ENEMY_TURN;
 			get_node('Zombie').zombie_actions();
-			player = 0;
+			current_turn = PLAYER_TURN;

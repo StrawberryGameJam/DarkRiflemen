@@ -53,7 +53,6 @@ func _process(_delta):
 func _move_to(world_position):
 	var MASS = 10.0
 	var ARRIVE_DISTANCE = 10.0
-
 	var desired_velocity = (world_position - position).normalized() * SPEED
 	var steering = desired_velocity - velocity
 	velocity += steering / MASS
