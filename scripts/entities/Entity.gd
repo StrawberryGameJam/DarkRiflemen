@@ -14,7 +14,17 @@ var velocity = Vector2()
 
 var tile_position = Vector2();
 var selected = false;
-var actions_taken = 0;
+var max_allowed_actions = 0;
+var MAX_MOVES_PER_TURN
+var ENTITY_NAME
+
+func _init(entity_given_name, entity_max_moves):
+	ENTITY_NAME = entity_given_name
+	MAX_MOVES_PER_TURN = entity_max_moves
+	max_allowed_actions = MAX_MOVES_PER_TURN
+	
+func new_turn():
+	max_allowed_actions = MAX_MOVES_PER_TURN
 
 func _ready():
 	tile_position = _tile(position)

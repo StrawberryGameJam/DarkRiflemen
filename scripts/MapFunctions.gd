@@ -129,7 +129,9 @@ func _recalculate_path():
 
 func clear_previous_path_drawing():
 	if not _point_path:
+		print("Not cleaning")
 		return
+	print("Cleaning")
 	var point_start = _point_path[0]
 	var point_end = _point_path[len(_point_path) - 1]
 	set_cell(point_start.x, point_start.y, -1)
@@ -175,7 +177,6 @@ func _draw():
 		draw_line(last_point, current_point, DRAW_COLOR, BASE_LINE_WIDTH, true)
 		draw_circle(current_point, BASE_LINE_WIDTH * 2.0, DRAW_COLOR)
 		last_point = current_point
-
 
 # Setters for the start and end path values.
 func _set_path_start_position(value):

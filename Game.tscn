@@ -1,12 +1,16 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://tileset/grid_lines/grid_lines_tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://tileset/grid/tileset.tres" type="TileSet" id=2]
 [ext_resource path="res://scripts/MapFunctions.gd" type="Script" id=3]
 [ext_resource path="res://scripts/entities/Zombie.gd" type="Script" id=4]
-[ext_resource path="res://sprites/character.png" type="Texture" id=5]
+[ext_resource path="res://sprites/enemy.png" type="Texture" id=5]
 [ext_resource path="res://scripts/Game.gd" type="Script" id=6]
 [ext_resource path="res://scripts/entities/Rifleman.gd" type="Script" id=7]
+
+[sub_resource type="StreamTexture" id=1]
+flags = 4
+load_path = "res://.import/character.png-eb70ac48a5acf508c4b7740ea4ac4fae.stex"
 
 [node name="Game" type="Node"]
 script = ExtResource( 6 )
@@ -31,7 +35,7 @@ script = ExtResource( 7 )
 
 [node name="Sprite" type="Sprite" parent="Rifleman"]
 position = Vector2( 7, 0 )
-texture = ExtResource( 5 )
+texture = SubResource( 1 )
 
 [node name="Zombie" type="Position2D" parent="."]
 position = Vector2( 924.523, 480.555 )
